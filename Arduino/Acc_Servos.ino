@@ -6,7 +6,7 @@
 //
 //////////////////////////////////////////////////////////////////////////
 
-#define SERVO_DELAY_STEP 20
+#define SERVO_DELAY_STEP 40
 #define SERVO_ANGLE_MINIMUM 20
 #define SERVO_ANGLE_MIDDLE 100
 #define SERVO_ANGLE_MAXIMUM 180
@@ -107,6 +107,7 @@ byte POSITION_FALL_DOWN[SERVOS] = {ANGLE_MIDDLE, ANGLE_MIDDLE, ANGLE_MIDDLE, ANG
 //////////////////////////////////////////////////////////////////////////
 
 byte servoTargetPosition[SERVOS];
+byte servoStepSize[SERVOS];
 byte servoCurrentPosition[SERVOS];
 Servo servoObjects[SERVOS];
 
@@ -129,7 +130,7 @@ void setTargetPosition(byte servo, byte position)
 
 void setTargetPosition(byte listOfPositions[])
 {
-	memcpy(listOfPositions, servoTargetPosition, SERVOS);
+	memcpy(servoTargetPosition, listOfPositions, SERVOS);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -194,12 +195,34 @@ void manualServos()
 
 void moveToTarget(int numberOfSteps)
 {
-	for (int step = 0; step < numberOfSteps; step++)
+	// Determine size of steps based upon target and current position of servos
+	for (int s = 0; s < SERVOS; s++) {
+		servoStepSize[s] = (servoTargetPosition[s] - servoCurrentPosition[s]) / numberOfSteps;
+	}
+
+	// Does all steps except the final step
+	for (int step = 0; step < numberOfSteps - 1; step++)
 	{
+		// Moves each servo closer to the target position
 		for (int s = 0; s < SERVOS; s++) {
-			servoCurrentPosition[s] = servoCurrentPosition[s] + ((servoTargetPosition[s] - servoCurrentPosition[s]) / numberOfSteps);
+			servoCurrentPosition[s] = servoCurrentPosition[s] + servoStepSize[s];
 			servoObjects[s].write(servoCurrentPosition[s]);
 			delay(SERVO_DELAY_STEP);
+			if (debugMode)
+			{
+				Serial.println("s = " + String(s) + " pos = " + String(servoCurrentPosition[s]));
+			}
 		}
+	}
+
+	// Corrects any division rounding for the final step so target is reached always
+	for (int s = 0; s < SERVOS; s++) {
+		servoCurrentPosition[s] = servoTargetPosition[s];
+		servoObjects[s].write(servoCurrentPosition[s]);
+		if (debugMode)
+		{
+			Serial.println("s = " + String(s) + " pos = " + String(servoCurrentPosition[s]));
+		}
+		delay(SERVO_DELAY_STEP);
 	}
 }

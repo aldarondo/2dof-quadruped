@@ -3,11 +3,11 @@
 #define MODE_MANUAL 1
 #define MODE_FORWARD 2
 
-const byte mode = MODE_MANUAL;
+const byte mode = MODE_FORWARD;
 
 const boolean debugMode = false;
 
-#define DELAY_STEP 20
+#define DELAY_STEP 1000
 
 void setup()
 {

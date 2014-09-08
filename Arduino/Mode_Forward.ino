@@ -37,12 +37,12 @@ void modeForward()
 	setTargetPosition(LEG_LEFT_BACK_HIP, LEG_LEFT_BACK_HIP_FORWARD); 
 	moveToTarget(1);
 
+	setTargetPosition(LEG_LEFT_FRONT_HIP, LEG_LEFT_FRONT_HIP_FORWARD);
+	moveToTarget(1);
+
 	setTargetPosition(LEG_LEFT_FRONT_KNEE, LEG_LEFT_FRONT_KNEE_UP);
 	setTargetPosition(LEG_RIGHT_BACK_HIP, LEG_RIGHT_BACK_HIP_BACK); 
 	moveToTarget(1); 
-
-	setTargetPosition(LEG_LEFT_FRONT_HIP, LEG_LEFT_FRONT_HIP_FORWARD);
-	moveToTarget(1);
 
 	setTargetPosition(LEG_LEFT_FRONT_KNEE, LEG_LEFT_FRONT_KNEE_DOWN);
 	moveToTarget(1);
